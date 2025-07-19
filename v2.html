@@ -264,7 +264,7 @@ top: 12px;
     recognition.onerror = (e) => {
 	stopSpeakingAnimation();
       console.error("Speech recognition error:", e.error);
-      setTimeout(() => recognition.start(), 1000); // retry
+      //setTimeout(() => recognition.start(), 1000); // retry
     };
 
 // Start listening
@@ -308,10 +308,12 @@ setTimeout("toggleFullscreen()",1000)
 
 
 function KeepListening(){
-if(isTalking==false){
-setTimeout(() => recognition.start(), 5000);
+if(isTalking==false)
+  recognition.start()
 }
-}
+
+
+var listening = setInterval(KeepListening, 5000);
 </script>
 </body>
 </html>
