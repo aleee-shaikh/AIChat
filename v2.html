@@ -82,6 +82,9 @@ top: 12px;
 <div id="btnStop" style="position:fixed;left:50%;top:12px;color:Red;display:none;" onclick="stopSpeakingAnimation();setTimeout(recognition.start(),1000);">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ef4444"><path fill="#ef4444" d="M3 3h18a2 2 0 0 1 2 2v12c0 1.1-.9 2-2 2h-5v2H8v-2H3c-1.1 0-2-.9-2-2V5c0-1.11.89-2 2-2m0 2v12h18V5H3m6 3h6v6H9V8Z"/></svg>
 </div>
+<div id="divMic" style="position:fixed;left:50%;top:12px;" >
+<button id="btnMic" onclick="recognition.start()">🎤 Speak</button>
+</div>
 <div style="position:fixed;right:5%;top:12px;" onclick="toggleFullscreen()">
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#ffffff"><path fill="#ffffff" d="M5 19v-5h2v3h3v2H5Zm0-9V5h5v2H7v3H5Zm9 9v-2h3v-3h2v5h-5Zm3-9V7h-3V5h5v5h-2Z"/></svg>
 </div>
@@ -172,6 +175,7 @@ top: 12px;
   function startSpeakingAnimation() {
     isTalking = true;
     document.getElementById("btnStop").style.display="block"
+    document.getElementById("btnMic").style.display="none"
     animateSpeaking();
   }
 
@@ -181,7 +185,7 @@ top: 12px;
     drawFace();
     document.getElementById("btnStop").style.display="none"
     speechSynthesis.cancel();
-    document.getElementById("btnStop").style.display="none"
+    document.getElementById("btnMic").style.display="block"
     setTimeout(() => recognition.start(), 1000);
   }
 
@@ -313,7 +317,7 @@ if(isTalking==false)
 }
 
 
-var listening = setInterval(KeepListening, 5000);
+//var listening = setInterval(KeepListening, 5000);
 </script>
 </body>
 </html>
