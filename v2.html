@@ -182,6 +182,7 @@ top: 12px;
     document.getElementById("btnStop").style.display="none"
     speechSynthesis.cancel();
     document.getElementById("btnStop").style.display="none"
+    setTimeout(() => recognition.start(), 1000);
   }
 
   drawFace();
@@ -306,7 +307,11 @@ function toggleFullscreen() {
 setTimeout("toggleFullscreen()",1000)
 
 
-
+function KeepListening(){
+if(isTalking==false){
+setTimeout(() => recognition.start(), 5000);
+}
+}
 </script>
 </body>
 </html>
