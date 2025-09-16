@@ -338,11 +338,12 @@ top: 12px;
         //    console.log("⚠️ Connection closed");
         //};
 
-        let ws = new WebSocket("ws://localhost:5000/ws/");
-        ws.onopen = () => console.log("✅ Connected!");
-        ws.onmessage = (e) => { speak(e.data); };
-        ws.onerror = (e) => console.error("❌ Error", e);
-        ws.onclose = () => console.log("🔌 Closed");
+        //let ws = new WebSocket("ws://localhost:5000/ws/");
+            const ws = new WebSocket("wss://targets-cst-contrary-regular.trycloudflare.com/ws/");
+            ws.onopen = () => console.log("✅ Connected!");
+            ws.onmessage = (e) => { alert("data received:" + e.data); speak(e.data); };
+            ws.onerror = (e) => console.error("❌ Error", e);
+            ws.onclose = () => console.log("🔌 Closed");
     </script>
 </body>
 </html>
