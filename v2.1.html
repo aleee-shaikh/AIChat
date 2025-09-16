@@ -363,7 +363,7 @@ top: 12px;
 
         let ws = new WebSocket("ws://localhost:5000/ws/");
         ws.onopen = () => console.log("✅ Connected!");
-        ws.onmessage = (e) => { alert(11); document.getElementById("messages").innerHTML = e.data; alert(222); };
+        ws.onmessage = (e) => { alert(e.data); document.getElementById("messages").innerHTML = e.data;};
         ws.onerror = (e) => console.error("❌ Error", e);
         ws.onclose = () => console.log("🔌 Closed");
     </script>
