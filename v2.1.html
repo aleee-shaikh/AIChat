@@ -320,28 +320,6 @@ top: 12px;
     </script>
 
 
-    <h2 style="color:white;">Live Messages from Laptop (via Cloudflare Tunnel)</h2>
-    <div id="messages" style="color:white;"></div>
-    <script>
-        // 🔹 Replace with your own Cloudflare tunnel URL
-        const socket = new WebSocket("wss://diamonds-budget-viewing-four.trycloudflare.com/ws/");
-
-        socket.onopen = () => {
-            console.log("✅ Connected to C# app!");
-        };
-
-        socket.onmessage = (event) => {
-            const div = document.getElementById("messages");
-            const p = document.createElement("p");
-            p.textContent = event.data;
-            div.appendChild(p);
-        };
-
-        socket.onclose = () => {
-            console.log("⚠️ Connection closed");
-        };
-    </script>
-
     <script>
         //const socket = new WebSocket("wss://diamonds-budget-viewing-four.trycloudflare.com/ws/");
 
