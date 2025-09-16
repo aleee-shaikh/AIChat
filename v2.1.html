@@ -342,7 +342,6 @@ top: 12px;
         };
     </script>
 
-    <div id="messages" style="color:white;">messages here</div>
     <script>
         //const socket = new WebSocket("wss://diamonds-budget-viewing-four.trycloudflare.com/ws/");
 
@@ -363,7 +362,7 @@ top: 12px;
 
         let ws = new WebSocket("ws://localhost:5000/ws/");
         ws.onopen = () => console.log("✅ Connected!");
-        ws.onmessage = (e) => { alert(e.data); document.getElementById("messages").innerHTML = e.data;};
+        ws.onmessage = (e) => { speak(e.data); };
         ws.onerror = (e) => console.error("❌ Error", e);
         ws.onclose = () => console.log("🔌 Closed");
     </script>
