@@ -341,5 +341,25 @@ top: 12px;
             console.log("⚠️ Connection closed");
         };
     </script>
+
+    <div id="messages" style="color:white;">messages here</div>
+    <script>
+        const socket = new WebSocket("wss://diamonds-budget-viewing-four.trycloudflare.com/ws/");
+
+        socket.onopen = () => {
+            console.log("✅ Connected to C# app!");
+        };
+
+        socket.onmessage = (event) => {
+            const div = document.getElementById("messages");
+            const p = document.createElement("p");
+            p.textContent = event.data;
+            div.appendChild(p);
+        };
+
+        socket.onclose = () => {
+            console.log("⚠️ Connection closed");
+        };
+    </script>
 </body>
 </html>
