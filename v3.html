@@ -202,11 +202,9 @@
         drawFace();
     </script>
 
-
-    <!-- jQuery & Gemini Integration -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        const API_KEY = "AIzaSyCM33A2CiTY_ZvMZFimK1tCJxLdobnNtzk";
+        const API_KEY = "";
         const MODEL = "models/gemini-2.5-flash";
         const ENDPOINT = `https://generativelanguage.googleapis.com/v1/${MODEL}:generateContent?key=${API_KEY}`;
 
@@ -227,34 +225,11 @@
             speechSynthesis.speak(utterance);
         }
 
-        function sendToGemini(prompt) {
-            const typingEl = addMessage("🤔 Thinking...", "bot").attr("id", "typing");
-            $.ajax({
-                method: "POST",
-                url: ENDPOINT,
-                contentType: "application/json",
-                data: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-                success: (resp) => {
-                    $('#typing').remove();
-                    const reply = resp?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
-                    addMessage(reply, "bot");
-                    speak(reply);
-                },
-                error: (err) => {
-                    $('#typing').remove();
-                    console.error(err);
-                    addMessage("❌ API error", "bot");
-                    speak("An error occurred.");
-                }
-            });
-        }
-
         $('#send').click(() => {
             const text = $('#input').val().trim();
             if (!text) return;
             addMessage(text, "user");
             $('#input').val('');
-            //sendToGemini(text);
             ask(text);
         });
 
@@ -272,7 +247,7 @@
         recognition.onresult = (event) => {
             const result = event.results[0][0].transcript.trim();
             if (result) {
-                sendToGemini(result);
+                ask(result);
             }
         };
 
@@ -332,14 +307,6 @@
     <script>
         const baseUrl = "https://192.168.100.19:5000"; // <-- replace with your laptop IP
 
-        // --- GET ---
-        $("#btnGet").click(function() {
-            $.get(baseUrl + "/ask", function(data) {
-                $("#getResult").text("GET response: " + JSON.stringify(data));
-            });
-        });
-
-        // --- POST ---
         function ask(query){
             const msg = $("#msgInput").val();
             $.ajax({
@@ -347,9 +314,6 @@
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ message: query }),
-                // success: function(data) {
-                // $("#postResult").text("POST response: " + JSON.stringify(data));
-                // }
                 success: (resp) => {
                     $('#typing').remove();
                     const reply = resp?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
@@ -365,21 +329,38 @@
             });
         }
 
+        function getNewMessage(){
+            setInterval(() => {
+                $.ajax({
+                    url: baseUrl + "/getNewMessage",
+                    method: "GET",
+                    success: (resp) => {
+                        const reply = resp?.latest_message || "";
+                        speak(reply);
+                    },
+                    error: (err) => {
+                        console.error(err);
+                    }
+                });
+            }, 3000);
+        }
+
+        getNewMessage();
         // --- WebSocket ---
         let ws;
         $("#btnConnect").click(function() {
             ws = new WebSocket("ws://" + window.location.hostname + ":5000/ws");
 
             ws.onopen = function() {
-                $("#wsMessages").append("<p>✅ WebSocket connected</p>");
+                console.log("✅ WebSocket connected");
             };
 
             ws.onmessage = function(event) {
-                $("#wsMessages").append("<p>📩 " + event.data + "</p>");
+                speak(event.data)
             };
 
             ws.onclose = function() {
-                $("#wsMessages").append("<p>❌ WebSocket closed</p>");
+                console.log("❌ WebSocket closed");
             };
         });
     </script>
