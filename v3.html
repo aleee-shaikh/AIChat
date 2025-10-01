@@ -179,7 +179,6 @@
             eyeOffset += eyeDir * 1;
             if (Math.abs(eyeOffset) > 5) eyeDir *= -1;
             drawFace();
-
             setTimeout(animateSpeaking, 150);
         }
 
@@ -327,22 +326,11 @@
                 recognition.start()
         }
 
-
         //var listening = setInterval(KeepListening, 5000);
     </script>
 
-
     <script>
-        const ws = new WebSocket("wss://gray-ringtones-ambient-proteins.trycloudflare.com/ws/");
-        ws.onopen = () => console.log("✅ Connected!");
-        ws.onmessage = (e) => { stopSpeakingAnimation(); speak(e.data); };
-        ws.onerror = (e) => console.error("❌ Error", e);
-        ws.onclose = () => console.log("🔌 Closed");
-    </script>
-
-
-    <script>
-        const baseUrl = "http://192.168.x.x:5000"; // <-- replace with your laptop IP
+        const baseUrl = "http://192.168.100.19:5000"; // <-- replace with your laptop IP
 
         // --- GET ---
         $("#btnGet").click(function() {
