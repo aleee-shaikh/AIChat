@@ -179,6 +179,7 @@
             eyeOffset += eyeDir * 1;
             if (Math.abs(eyeOffset) > 5) eyeDir *= -1;
             drawFace();
+
             setTimeout(animateSpeaking, 150);
         }
 
@@ -202,6 +203,8 @@
         drawFace();
     </script>
 
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         const API_KEY = "";
@@ -223,6 +226,28 @@
                 stopSpeakingAnimation();
             };
             speechSynthesis.speak(utterance);
+        }
+
+        function sendToGemini(prompt) {
+            const typingEl = addMessage("🤔 Thinking...", "bot").attr("id", "typing");
+            $.ajax({
+                method: "POST",
+                url: ENDPOINT,
+                contentType: "application/json",
+                data: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+                success: (resp) => {
+                    $('#typing').remove();
+                    const reply = resp?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+                    addMessage(reply, "bot");
+                    speak(reply);
+                },
+                error: (err) => {
+                    $('#typing').remove();
+                    console.error(err);
+                    addMessage("❌ API error", "bot");
+                    speak("An error occurred.");
+                }
+            });
         }
 
         $('#send').click(() => {
