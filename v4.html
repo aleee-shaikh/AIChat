@@ -251,7 +251,7 @@
                 data: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
                 success: (resp) => {
                     $('#typing').remove();
-                    const reply = resp?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+                    const reply = resp?.candidates?.[0]?.content?.parts?.[0]?.text || "";//"No response";
                     addMessage(reply, "bot");
                     speak(reply);
                 },
@@ -356,7 +356,7 @@
                 success: (resp) => {
                     console.log(JSON.stringify(resp));
                     $('#typing').remove();
-                    const reply = resp?.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+                    const reply = resp?.candidates?.[0]?.content?.parts?.[0]?.text || "";// "No response";
                     addMessage(reply, "bot");
                     speak(reply);
                 },
