@@ -237,6 +237,7 @@
 
             startSpeakingAnimation();
             utterance.onend = () => {
+                recognition.start();
                 stopSpeakingAnimation();
             };
             speechSynthesis.speak(utterance);
