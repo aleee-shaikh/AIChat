@@ -2,72 +2,90 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Mobile Camera Feed + Mic</title>
+    <title>2-Way Call (MediaMTX v1.15.5)</title>
     <style>
         body {
             background: #111;
             color: white;
             text-align: center;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
+            font-family: Arial;
         }
 
         video {
             width: 45%;
-            border-radius: 10px;
-            border: 2px solid #444;
+            margin: 5px;
+            border: 2px solid #0f0;
         }
 
         button {
-            margin-top: 20px;
-            padding: 10px 25px;
+            padding: 10px 20px;
             font-size: 16px;
         }
     </style>
 </head>
+
 <body>
-    <h2>Mobile Camera Feed + Laptop Mic</h2>
+    <h2>2-Way WebRTC Call</h2>
 
-    <div class="container">
-        <!-- Remote mobile camera feed -->
-        <video id="remoteVideo" autoplay controls playsinline>
-            <source src="http://192.168.100.19:8888/cam/" type="application/x-mpegURL">
-            Your browser does not support video streaming.
-        </video>
-
-        <!-- Local laptop mic preview -->
-        <video id="localVideo" autoplay muted playsinline></video>
-    </div>
-
-    <button id="startMicBtn">Start Mic</button>
+    <video id="remoteVideo" autoplay playsinline></video>
+    <video id="localVideo" autoplay playsinline muted></video>
+    <br><br>
+    <button onclick="start()">Start Call</button>
 
     <script>
-        const startMicBtn = document.getElementById('startMicBtn');
-        const localVideo = document.getElementById('localVideo');
+        async function start() {
 
-        startMicBtn.onclick = async () => {
-            try {
-                // Capture laptop microphone and camera (optional)
-                const localStream = await navigator.mediaDevices.getUserMedia({
-                    audio: true,
-                    video: false // set true if you want laptop camera too
-                });
+            // 1️⃣ Get local camera
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true,
+                audio: true
+            });
+            localVideo.srcObject = stream;
 
-                // Preview local audio (visual only)
-                localVideo.srcObject = localStream;
+            // 2️⃣ Publish local stream (cam2)
+            const pcPub = new RTCPeerConnection();
+            stream.getTracks().forEach(t => pcPub.addTrack(t, stream));
 
-                alert("Microphone access granted. You can speak now.");
-            } catch (err) {
-                console.error("Error accessing microphone:", err);
-                alert("Failed to access microphone.");
-            }
-        };
+            const wsPub = new WebSocket("ws://192.168.100.19:8889/webrtc?path=cam2&publish");
+
+            wsPub.onmessage = async (e) => {
+                const msg = JSON.parse(e.data);
+                if (msg.sdp) {
+                    await pcPub.setRemoteDescription(msg.sdp);
+                    const answer = await pcPub.createAnswer();
+                    await pcPub.setLocalDescription(answer);
+                    wsPub.send(JSON.stringify({ sdp: pcPub.localDescription }));
+                }
+            };
+
+            const offer = await pcPub.createOffer();
+            await pcPub.setLocalDescription(offer);
+            wsPub.onopen = () => {
+                wsPub.send(JSON.stringify({ sdp: offer }));
+            };
+
+            // 3️⃣ Receive IP camera (cam1)
+            const pcSub = new RTCPeerConnection();
+            pcSub.ontrack = e => remoteVideo.srcObject = e.streams[0];
+
+            const wsSub = new WebSocket("ws://192.168.100.19:8889/webrtc?path=cam1");
+
+            wsSub.onmessage = async (e) => {
+                const msg = JSON.parse(e.data);
+                if (msg.sdp) {
+                    await pcSub.setRemoteDescription(msg.sdp);
+                    const answer = await pcSub.createAnswer();
+                    await pcSub.setLocalDescription(answer);
+                    wsSub.send(JSON.stringify({ sdp: pcSub.localDescription }));
+                }
+            };
+
+            wsSub.onopen = async () => {
+                const offer = await pcSub.createOffer();
+                await pcSub.setLocalDescription(offer);
+                wsSub.send(JSON.stringify({ sdp: offer }));
+            };
+        }
     </script>
 </body>
 </html>
