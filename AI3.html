@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>GIF Decision Carousel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        background: #0f172a;
+        font-family: Arial, sans-serif;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .carousel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        width: 90%;
+        max-width: 900px;
+    }
+
+    .card {
+        background: #020617;
+        border-radius: 14px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .card:hover {
+        transform: scale(1.03);
+    }
+
+    .card img {
+        width: 100%;
+        height: 280px;
+        object-fit: cover;
+        display: block;
+    }
+
+    @media (max-width: 600px) {
+        .card img {
+            height: 180px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="carousel">
+    <div class="card" onclick="selectOption(0)">
+        <img id="img1">
+    </div>
+
+    <div class="card" onclick="selectOption(1)">
+        <img id="img2">
+    </div>
+</div>
+
+<script>
+/* 🔹 DECISION FLOW WITH LOOP + PRESS STATES */
+const flow = {
+    start: [
+        {
+            loop: "day.gif",
+            pressed: "day_pressed.gif",
+            next: "water"
+        },
+        {
+            loop: "night.gif",
+            pressed: "night_pressed.gif",
+            next: "water"
+        }
+    ],
+
+    water: [
+        {
+            loop: "ColdWaterLoop.gif",
+            pressed: "ColdWaterPressButton.gif",
+            next: "animals"
+        },
+        {
+            loop: "HotWaterLoop.gif",
+            pressed: "HotWaterPressButton.gif",
+            next: "animals"
+        }
+    ],
+
+    animals: [
+        {
+            loop: "LionLoop.gif",
+            pressed: "LionPressButton.gif",
+            next: "nature"
+        },
+        {
+            loop: "SheepLoop.gif",
+            pressed: "SheepPressButton.gif",
+            next: "nature"
+        }
+    ],
+
+    nature: [
+        {
+            loop: "PlantingLoop.gif",
+            pressed: "SeedsPressButton.gif",
+            next: "final"
+        },
+        {
+            loop: "TreeCuttingLoop.gif",
+            pressed: "ChainshawPressButton.gif",
+            next: "final"
+        }
+    ],
+
+    final: [
+        {
+            loop: "heven_loop.gif",
+            pressed: "Heaven_Pressed_Button.gif",
+            next: "start"
+        },
+        {
+            loop: "hell_loop.gif",
+            pressed: "Hell_Pressed_Button.gif",
+            next: "start"
+        }
+    ]
+};
+
+let currentStep = "start";
+let locked = false;
+
+function loadStep(step) {
+    const options = flow[step];
+
+    document.getElementById("img1").src = options[0].loop;
+    document.getElementById("img2").src = options[1].loop;
+
+    currentStep = step;
+    locked = false;
+}
+
+function selectOption(index) {
+    if (locked) return;
+    locked = true;
+
+    const option = flow[currentStep][index];
+    const img = index === 0 ? "img1" : "img2";
+
+    // Show pressed GIF
+    document.getElementById(img).src = option.pressed;
+
+    // Move to next step after animation
+    setTimeout(() => {
+        loadStep(option.next);
+    }, 900); // adjust based on GIF length
+}
+
+loadStep(currentStep);
+</script>
+
+</body>
+</html>
