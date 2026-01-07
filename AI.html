@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Image Loop Viewer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+
+    .container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .image-area {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        max-width: 900px;
+        width: 100%;
+    }
+
+    .image-card {
+        background: #020617;
+        border-radius: 12px;
+        padding: 12px;
+        text-align: center;
+        box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    }
+
+    .image-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .image-card img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        padding: 20px;
+        background: #020617;
+    }
+
+    .btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: #1e293b;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.2s;
+    }
+
+    .btn:hover {
+        background: #334155;
+        transform: scale(1.1);
+    }
+
+    svg {
+        fill: white;
+        width: 30px;
+        height: 30px;
+    }
+
+    @media (max-width: 600px) {
+        .image-area {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="image-area">
+        <div class="image-card">
+            <div class="image-title" id="title1"></div>
+            <img id="img1">
+        </div>
+        <div class="image-card">
+            <div class="image-title" id="title2"></div>
+            <img id="img2">
+        </div>
+    </div>
+</div>
+
+<div class="controls">
+    <button class="btn" onclick="prevImages()">
+        <!-- Down Arrow -->
+        <svg viewBox="0 0 24 24">
+            <path d="M7 10l5 5 5-5z"></path>
+        </svg>
+    </button>
+
+    <button class="btn" onclick="nextImages()">
+        <!-- Up Arrow -->
+        <svg viewBox="0 0 24 24">
+            <path d="M7 14l5-5 5 5z"></path>
+        </svg>
+    </button>
+</div>
+
+<script>
+    const data = [
+        { title: "Robot Vision", img: "https://picsum.photos/id/1011/600/400" },
+        { title: "AI Control", img: "https://picsum.photos/id/1015/600/400" },
+        { title: "Autonomous Drive", img: "https://picsum.photos/id/1025/600/400" },
+        { title: "Object Detection", img: "https://picsum.photos/id/1035/600/400" },
+        { title: "Arm Movement", img: "https://picsum.photos/id/1044/600/400" },
+        { title: "Sensor Fusion", img: "https://picsum.photos/id/1050/600/400" }
+    ];
+
+    let index = 0;
+
+    function loadImages() {
+        document.getElementById("title1").innerText = data[index]?.title || "";
+        document.getElementById("img1").src = data[index]?.img || "";
+
+        document.getElementById("title2").innerText = data[index + 1]?.title || "";
+        document.getElementById("img2").src = data[index + 1]?.img || "";
+    }
+
+    function nextImages() {
+        if (index + 2 < data.length) {
+            index += 2;
+            loadImages();
+        }
+    }
+
+    function prevImages() {
+        if (index - 2 >= 0) {
+            index -= 2;
+            loadImages();
+        }
+    }
+
+    loadImages();
+</script>
+
+</body>
+</html>
