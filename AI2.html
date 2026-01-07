@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Decision Carousel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+    body {
+        margin: 0;
+        background: #0f172a;
+        font-family: Arial, sans-serif;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    .carousel {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        width: 90%;
+        max-width: 900px;
+    }
+
+    .card {
+        background: #020617;
+        border-radius: 14px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    .card:hover {
+        transform: scale(1.04);
+        box-shadow: 0 0 30px rgba(56,189,248,0.5);
+    }
+
+    .title {
+        padding: 12px;
+        text-align: center;
+        font-weight: bold;
+        background: #020617;
+    }
+
+    .card img {
+        width: 100%;
+        height: 260px;
+        object-fit: cover;
+        display: block;
+    }
+
+    @media (max-width: 500px) {
+        .card img {
+            height: 180px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="carousel">
+    <div class="card" onclick="selectOption(0)">
+        <div class="title" id="title1"></div>
+        <img id="img1">
+    </div>
+
+    <div class="card" onclick="selectOption(1)">
+        <div class="title" id="title2"></div>
+        <img id="img2">
+    </div>
+</div>
+
+<script>
+    /* 🔹 Decision Tree Data */
+    const flow = {
+        start: [
+            { title: "Hot", img: "https://picsum.photos/id/1016/600/400", next: "hot" },
+            { title: "Cold", img: "https://picsum.photos/id/1018/600/400", next: "cold" }
+        ],
+
+        hot: [
+            { title: "Fire Mode", img: "https://picsum.photos/id/1021/600/400", next: "fire" },
+            { title: "Steam Mode", img: "https://picsum.photos/id/1022/600/400", next: "steam" }
+        ],
+
+        cold: [
+            { title: "Ice Mode", img: "https://picsum.photos/id/1031/600/400", next: "ice" },
+            { title: "Wind Mode", img: "https://picsum.photos/id/1033/600/400", next: "wind" }
+        ],
+
+        fire: [
+            { title: "High Power", img: "https://picsum.photos/id/1040/600/400", next: "start" },
+            { title: "Low Power", img: "https://picsum.photos/id/1041/600/400", next: "start" }
+        ],
+
+        ice: [
+            { title: "Freeze Object", img: "https://picsum.photos/id/1050/600/400", next: "start" },
+            { title: "Cool Area", img: "https://picsum.photos/id/1052/600/400", next: "start" }
+        ]
+    };
+
+    let currentStep = "start";
+
+    function loadStep(step) {
+        const options = flow[step];
+
+        document.getElementById("title1").innerText = options[0].title;
+        document.getElementById("img1").src = options[0].img;
+
+        document.getElementById("title2").innerText = options[1].title;
+        document.getElementById("img2").src = options[1].img;
+
+        currentStep = step;
+    }
+
+    function selectOption(index) {
+        const nextStep = flow[currentStep][index].next;
+        loadStep(nextStep);
+    }
+
+    loadStep(currentStep);
+</script>
+
+</body>
+</html>
